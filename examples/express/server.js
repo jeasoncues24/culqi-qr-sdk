@@ -1,5 +1,5 @@
 /**
- * Ejemplo de integración de @jcues28/culqi-qr-sdk con Express
+ * Ejemplo de integración de culqi-sdk con Express
  *
  * Flujo que cubre este ejemplo:
  *
@@ -27,7 +27,7 @@ import {
   ValidationError,
   isOrderPaid,
   parseWebhookEvent,
-} from "@jcues28/culqi-qr-sdk";
+} from "culqi-sdk";
 
 // ---------------------------------------------------------------------------
 // Configuración

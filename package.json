@@ -1,5 +1,5 @@
 {
-  "name": "@jcues28/culqi-qr-sdk",
+  "name": "culqi-sdk",
   "version": "0.1.0",
   "description": "TypeScript SDK for Culqi QR payments",
   "license": "MIT",

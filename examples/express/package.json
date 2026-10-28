@@ -1,14 +1,14 @@
 {
   "name": "culqi-qr-sdk-example-express",
   "version": "0.0.1",
-  "description": "Ejemplo de integración de @jcues28/culqi-qr-sdk con Express",
+  "description": "Ejemplo de integración de culqi-sdk con Express",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "node --env-file=.env server.js"
   },
   "dependencies": {
-    "@jcues28/culqi-qr-sdk": "file:../..",
+    "culqi-sdk": "file:../..",
     "express": "^4.21.2",
     "qrcode": "^1.5.4"
   }

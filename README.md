@@ -1,4 +1,4 @@
-# @jcues28/culqi-qr-sdk
+# culqi-sdk
 
 ![version](https://img.shields.io/badge/versión-0.1.0-blue)
 ![estado](https://img.shields.io/badge/estado-alpha-orange)
@@ -27,7 +27,7 @@ Te permite crear órdenes de pago, consultar su estado y procesar los eventos we
 ## Instalación
 
 ```bash
-npm install @jcues28/culqi-qr-sdk
+npm install culqi-sdk
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @jcues28/culqi-qr-sdk
 ## Configuración
 
 ```ts
-import { CulqiClient } from "@jcues28/culqi-qr-sdk";
+import { CulqiClient } from "culqi-sdk";
 
 const culqi = new CulqiClient({
   secretKey: process.env.CULQI_SECRET_KEY, // sk_test_... o sk_live_...
@@ -54,7 +54,7 @@ CULQI_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxx
 ## Crear una orden de pago
 
 ```ts
-import { CulqiClient } from "@jcues28/culqi-qr-sdk";
+import { CulqiClient } from "culqi-sdk";
 
 const culqi = new CulqiClient({ secretKey: process.env.CULQI_SECRET_KEY });
 
@@ -114,7 +114,7 @@ import {
   ValidationError,
   CulqiApiError,
   CulqiNetworkError,
-} from "@jcues28/culqi-qr-sdk";
+} from "culqi-sdk";
 
 try {
   const orden = await culqi.createOrder(payload);
@@ -148,7 +148,7 @@ Culqi envía un evento `order.status.changed` cada vez que el estado de una orde
 Debes configurar la URL de tu endpoint en el panel de Culqi → Desarrolladores → Webhooks.
 
 ```ts
-import { parseWebhookEvent, isOrderPaid } from "@jcues28/culqi-qr-sdk";
+import { parseWebhookEvent, isOrderPaid } from "culqi-sdk";
 
 // Ejemplo con Express
 app.post("/webhooks/culqi", express.text({ type: "*/*" }), async (req, res) => {
@@ -197,7 +197,7 @@ Cuando Culqi publique un mecanismo de firma, `parseWebhookEvent` será actualiza
 Podés ejecutar el validador de forma independiente antes de crear la orden:
 
 ```ts
-import { validateOrderRequest, ValidationError } from "@jcues28/culqi-qr-sdk";
+import { validateOrderRequest, ValidationError } from "culqi-sdk";
 
 try {
   validateOrderRequest(payload);
@@ -216,10 +216,10 @@ El paquete incluye ambos formatos:
 
 ```ts
 // ESM
-import { CulqiClient } from "@jcues28/culqi-qr-sdk";
+import { CulqiClient } from "culqi-sdk";
 
 // CommonJS
-const { CulqiClient } = require("@jcues28/culqi-qr-sdk");
+const { CulqiClient } = require("culqi-sdk");
 ```
 
 ---
