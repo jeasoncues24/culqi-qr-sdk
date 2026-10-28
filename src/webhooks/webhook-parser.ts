@@ -2,24 +2,55 @@ import { ValidationError } from "../errors/validation-error.js";
 import { CulqiWebhookEvent, ORDER_STATUS_CHANGED } from "./webhook-types.js";
 
 /**
+ * Opciones para `parseWebhookEvent`.
+ *
+ * Actualmente no hay opciones obligatorias porque Culqi no documenta un mecanismo
+ * de firma criptográfica para webhooks. Esta interfaz está diseñada para recibir
+ * `signingSecret` en cuanto Culqi lo publique, sin cambiar la firma actual.
+ *
+ * @example
+ * // Hoy (sin firma):
+ * parseWebhookEvent(rawBody)
+ *
+ * // Cuando Culqi publique firma (futuro):
+ * parseWebhookEvent(rawBody, { signingSecret: process.env.CULQI_WEBHOOK_SECRET, signature: req.headers["x-culqi-signature"] })
+ */
+export interface ParseWebhookEventOptions {
+  /**
+   * Clave secreta de firma de webhooks.
+   * RESERVADO — Culqi no documenta este mecanismo públicamente aún.
+   * Cuando lo publique, pasar aquí el secreto y la firma permitirá verificación
+   * criptográfica dentro de `parseWebhookEvent`.
+   *
+   * @internal
+   */
+  signingSecret?: never;
+}
+
+/**
  * Parsea y valida mínimamente el cuerpo de una solicitud webhook de Culqi.
  *
  * Esta función NO verifica una firma criptográfica porque la documentación pública
  * de Culqi no describe un mecanismo de firma de webhooks al momento de escribir esto.
- * Si Culqi añade verificación de firma en el futuro, esta función debe actualizarse
- * antes de confiar en ella en producción.
+ * Si Culqi añade verificación de firma en el futuro, esta función aceptará las opciones
+ * correspondientes a través de `ParseWebhookEventOptions` sin romper la API actual.
  *
- * **Guía de seguridad:**
- * - Restringe el acceso a tu endpoint de webhook por IP si Culqi publica sus rangos IP de salida.
- * - Siempre consulta la orden en la API de Culqi (`GET /orders/{id}`) para confirmar
+ * **Guía de seguridad hasta que Culqi publique verificación de firma:**
+ * - Siempre consulta la orden en la API de Culqi (`getOrder(id)`) para confirmar
  *   su estado actual antes de dar por completada una compra.
  * - Nunca confíes solo en el payload del webhook para confirmar un pago.
  * - Diseña tu handler para ser idempotente: Culqi puede reintentar eventos si falla la entrega.
+ * - Restringe el acceso a tu endpoint de webhook por IP si Culqi publica sus rangos IP de salida.
+ * - Responde 200 antes de cualquier procesamiento asíncrono para evitar reintentos por timeout.
  *
  * @param rawBody - El cuerpo de la solicitud como string (antes de parsear el JSON).
+ * @param _options - Reservado para verificación de firma futura. Ignorado actualmente.
  * @throws {ValidationError} si el cuerpo no es JSON válido o le faltan campos obligatorios.
  */
-export function parseWebhookEvent(rawBody: string): CulqiWebhookEvent {
+export function parseWebhookEvent(
+  rawBody: string,
+  _options?: ParseWebhookEventOptions
+): CulqiWebhookEvent {
   let parsed: unknown;
   try {
     parsed = JSON.parse(rawBody);

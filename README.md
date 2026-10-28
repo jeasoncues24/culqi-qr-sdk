@@ -1,12 +1,9 @@
-# culqi-qr-sdk
-<<<<<<< HEAD
-TypeScript SDK for integrating Culqi QR payments with Yape and Plin in Peru.
-=======
+# @jcues28/culqi-qr-sdk
 
 ![version](https://img.shields.io/badge/versión-0.1.0-blue)
 ![estado](https://img.shields.io/badge/estado-alpha-orange)
 ![licencia](https://img.shields.io/badge/licencia-MIT-green)
-![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
+![node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)
 
 SDK de TypeScript para integrar pagos mediante órdenes QR de Culqi en un backend Node.js. Diseñado principalmente para billeteras móviles **Yape** y **Plin** en Perú.
 
@@ -16,7 +13,7 @@ Te permite crear órdenes de pago, consultar su estado y procesar los eventos we
 
 ## Requisitos
 
-- Node.js 18 o superior (se requiere `fetch` nativo)
+- Node.js 20 o superior (se requiere `fetch` nativo)
 - TypeScript 5.x (opcional — el paquete incluye builds ESM y CommonJS con declaraciones de tipos)
 
 > **Obtén tus credenciales ingresando a tu panel de Culqi → Desarrolladores → API Keys.**
@@ -30,7 +27,7 @@ Te permite crear órdenes de pago, consultar su estado y procesar los eventos we
 ## Instalación
 
 ```bash
-npm install culqi-qr-sdk
+npm install @jcues28/culqi-qr-sdk
 ```
 
 ---
@@ -38,7 +35,7 @@ npm install culqi-qr-sdk
 ## Configuración
 
 ```ts
-import { CulqiClient } from "culqi-qr-sdk";
+import { CulqiClient } from "@jcues28/culqi-qr-sdk";
 
 const culqi = new CulqiClient({
   secretKey: process.env.CULQI_SECRET_KEY, // sk_test_... o sk_live_...
@@ -57,7 +54,7 @@ CULQI_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxx
 ## Crear una orden de pago
 
 ```ts
-import { CulqiClient } from "culqi-qr-sdk";
+import { CulqiClient } from "@jcues28/culqi-qr-sdk";
 
 const culqi = new CulqiClient({ secretKey: process.env.CULQI_SECRET_KEY });
 
@@ -117,7 +114,7 @@ import {
   ValidationError,
   CulqiApiError,
   CulqiNetworkError,
-} from "culqi-qr-sdk";
+} from "@jcues28/culqi-qr-sdk";
 
 try {
   const orden = await culqi.createOrder(payload);
@@ -151,7 +148,7 @@ Culqi envía un evento `order.status.changed` cada vez que el estado de una orde
 Debes configurar la URL de tu endpoint en el panel de Culqi → Desarrolladores → Webhooks.
 
 ```ts
-import { parseWebhookEvent, isOrderPaid } from "culqi-qr-sdk";
+import { parseWebhookEvent, isOrderPaid } from "@jcues28/culqi-qr-sdk";
 
 // Ejemplo con Express
 app.post("/webhooks/culqi", express.text({ type: "*/*" }), async (req, res) => {
@@ -182,12 +179,16 @@ app.post("/webhooks/culqi", express.text({ type: "*/*" }), async (req, res) => {
 
 ### Seguridad en webhooks
 
-La documentación pública de Culqi no describe un mecanismo de firma criptográfica para webhooks al momento de escribir esto. Hasta que Culqi publique un método documentado:
+> **Estado actual (octubre 2025):** La documentación pública de Culqi no describe un mecanismo de firma criptográfica para webhooks. El SDK implementa el patrón de defensa más robusto disponible: verificar el estado de cada orden directamente en la API antes de procesar cualquier pago.
 
-1. **Siempre verifica el estado** de la orden consultando `getOrder(id)` antes de procesar cualquier pago.
-2. Diseña tu handler para ser **idempotente** — Culqi puede reintentar el mismo evento si falla la entrega.
-3. Nunca confíes únicamente en el payload del webhook para confirmar un pago.
-4. Restringe el acceso al endpoint por IP si Culqi publica sus rangos de salida.
+Hasta que Culqi publique un mecanismo de firma documentado, estas son las medidas de seguridad a aplicar:
+
+1. **Verifica siempre el estado** de la orden llamando a `getOrder(id)` — nunca confíes únicamente en el payload del webhook.
+2. **Diseña tu handler para ser idempotente** — Culqi puede reintentar el mismo evento si falla la entrega. Verifica que la orden no esté ya procesada antes de actuar.
+3. **Restringe acceso por IP** si Culqi publica sus rangos de salida (revisa su documentación oficial).
+4. **Responde 200 rápidamente** — responde antes de hacer cualquier procesamiento asíncrono para evitar reintentos por timeout.
+
+Cuando Culqi publique un mecanismo de firma, `parseWebhookEvent` será actualizado para aceptar una clave de firma y verificarla antes de devolver el evento.
 
 ---
 
@@ -196,7 +197,7 @@ La documentación pública de Culqi no describe un mecanismo de firma criptográ
 Podés ejecutar el validador de forma independiente antes de crear la orden:
 
 ```ts
-import { validateOrderRequest, ValidationError } from "culqi-qr-sdk";
+import { validateOrderRequest, ValidationError } from "@jcues28/culqi-qr-sdk";
 
 try {
   validateOrderRequest(payload);
@@ -215,10 +216,10 @@ El paquete incluye ambos formatos:
 
 ```ts
 // ESM
-import { CulqiClient } from "culqi-qr-sdk";
+import { CulqiClient } from "@jcues28/culqi-qr-sdk";
 
 // CommonJS
-const { CulqiClient } = require("culqi-qr-sdk");
+const { CulqiClient } = require("@jcues28/culqi-qr-sdk");
 ```
 
 ---
@@ -259,7 +260,7 @@ ngrok http 3000
 ## Scripts
 
 ```bash
-npm test           # corre los 75 tests con Vitest
+npm test           # corre los tests con Vitest
 npm run typecheck  # verificación de tipos con TypeScript en modo strict
 npm run build      # genera los bundles ESM, CJS y declaraciones de tipos en dist/
 ```
@@ -269,4 +270,3 @@ npm run build      # genera los bundles ESM, CJS y declaraciones de tipos en dis
 ## Licencia
 
 MIT
->>>>>>> 9fd82fd (feat: versión inicial del SDK culqi-qr-sdk)
