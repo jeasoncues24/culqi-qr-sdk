@@ -14,6 +14,14 @@
       "require": "./dist/index.cjs"
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeasoncues24/culqi-qr-sdk"
+  },
+  "homepage": "https://github.com/jeasoncues24/culqi-qr-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/jeasoncues24/culqi-qr-sdk/issues"
+  },
   "engines": {
     "node": ">=20"
   },
