@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -147,3 +148,10 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+=======
+dist
+node_modules
+.env
+.claude
+examples/express/node_modules
+>>>>>>> 9fd82fd (feat: versión inicial del SDK culqi-qr-sdk)
